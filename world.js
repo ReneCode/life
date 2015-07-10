@@ -36,6 +36,14 @@ function World(cntX, cntY) {
 		field[x][y] = val;
 	}
 
+	this.toggleValue = function(x,y) {
+		if (!self.checkIndex(x,y)) {
+			return undefined;
+		}
+		var val = field[x][y];
+		val = val ? 0 : 1;
+		field[x][y] = val;
+	}
 
 
 	this.countNeighbours = function(xMe,yMe) {

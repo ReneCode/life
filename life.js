@@ -6,6 +6,10 @@ function Life() {
 	var cellCntX = 40;
 	var cellCntY = 40;
 	var cellSize = 10;
+	var step = 0;
+
+	var canvas = document.getElementById("canvas");
+	canvas.addEventListener('click', function(ev) { self.canvasclick(ev) });
 
 	var world = new World(cellCntX, cellCntY);
 	world.setValue(0,0,1);
@@ -18,20 +22,38 @@ function Life() {
 	world.setValue(4,6,1);
 	world.setValue(5,6,1);
 	world.setValue(6,6,1);
-	world.setValue(7,6,1);
+	world.setValue(5,7,1);
+	world.setValue(8,7,1);
+	world.setValue(7,7,1);
+	world.setValue(9,6,1);
 
 
 	var left = 10;
 	var interval = undefined;
 
 	this.start = function() {
-		interval = setInterval( self.draw, 100);
+		interval = setInterval( self.draw, 2000);
 	}
 
 	this.stop = function() {
 		clearInterval(interval);
 	}
 
+	this.canvasclick = function(event) {
+		var elemLeft = canvas.offsetLeft;
+		var elemTop = canvas.offsetTop;
+	    var x = event.pageX - elemLeft,
+	        y = event.pageY - elemTop;
+
+		var xIdx = Math.floor(x / cellSize);
+		var yIdx = Math.floor(y / cellSize);
+	    world.toggleValue(xIdx, yIdx);
+	    self.drawCell(xIdx, yIdx);
+	}
+
+	this.idxTupelFromCoord = function(x, y) {
+		return [xIdx,yIdx];
+	}
 
 	this.drawGrid = function() {
 		ctx.lineWidth = 1;
@@ -69,7 +91,14 @@ function Life() {
 
 	this.draw = function() {
 		// self.stop();
-
+		var ele = document.getElementById("step");
+		ele.innerText = step.toString();
+		step++;
+/*
+		if (step == 40) {
+			self.stop();
+		}  
+*/
 		// clear
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		self.drawGrid();

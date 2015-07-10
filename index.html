@@ -6,12 +6,13 @@
 	<script src="jquery-1.11.3.min.js"></script>
 </head>
 <body>
-	<canvas width="400" height="400"></canvas>
+	<canvas id="canvas" width="400" height="400"></canvas>
 	<div>
 		<button onclick="life.start();">Start</button>
 		<button onclick="life.stop();">Stop</button>
 	</div>
 	<script src="world.js"></script>
 	<script src="life.js"></script>
+	<div>Step: <span id="step">0</span></div>
 </body>
 </html>
