@@ -32,7 +32,7 @@ function Life() {
 	var interval = undefined;
 
 	this.start = function() {
-		interval = setInterval( self.draw, 2000);
+		interval = setInterval( self.draw, 500);
 	}
 
 	this.stop = function() {
