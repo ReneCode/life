@@ -7,9 +7,9 @@ import time
 import os
 import random
 
-WIDTH = 60
-HEIGHT = 40
-ON = "o"
+WIDTH = 30
+HEIGHT = 30
+ON = "*"
 OFF = " "
 
 def createRow():
@@ -104,7 +104,7 @@ def main():
 	while generation > 0:
 		os.system('clear')
 		outputWorld(world)
-		time.sleep(0.5)
+		time.sleep(0.005)
 		world = calcNewWorld(world)
 		generation = generation-1
 
