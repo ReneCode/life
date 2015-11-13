@@ -1,88 +1,126 @@
-
-import doctest
-import copy
-
-def test():
-	"""
-	>>> test()
-	42
-	"""
-	return 42
+''' 
+ life
+'''
 
 
-def strToWorld(s):
-	rows = s.split(',')
-	world = []
-	for r in rows:
-		arr = []
-		for c in r:
-			if c.isdigit():
-				arr.append(int(c))
+import time
+import os
+import random
+
+WIDTH = 60
+HEIGHT = 40
+ON = "o"
+OFF = " "
+
+def createRow():
+	row = ""
+	for i in range(WIDTH):
+		if random.randint(1,8) == 1:
+			row += ON
+		else:
+			row += OFF
+	return row
+
+def createWorld():
+	w = []
+	for i in range(HEIGHT):
+		row = createRow()
+		w.append( row )
+	return w
+
+
+def outputWorld(w):
+	for i in range(len(w)):
+		print w[i]
+
+
+def calcNeighbours(w, ir, ic):
+	'''
+	>>> w = [ 
+	...		('..o.'), 
+	...		('oooo'), 
+	...		('ooo.') 
+	...		]
+	>>> w[0][3]
+	'.'
+	>>> w[2][3]
+	'.'
+	>>> calcNeighbours(w, 0, 0)
+	2
+	>>> calcNeighbours(w, 0, 1)
+	4
+	>>> calcNeighbours(w, 0, 2)
+	3
+	>>> calcNeighbours(w, 0, 3)
+	3
+	>>> calcNeighbours(w, 1, 1)
+	6
+	'''
+	cnt = 0
+	maxR = len(w)
+	maxC = len(w[0])
+	for r in range(-1,2):
+		for c in range(-1,2):
+			idx_r = ir+r
+			idx_c = ic+c
+			calc = True
+			if (ir == idx_r  and  ic==idx_c):
+				calc = False
+			elif (idx_r < 0  or  idx_r >= maxR):
+				calc = False
+			elif (idx_c < 0  or  idx_c >= maxC):
+				calc = False
+			if calc:
+#				print "r:", idx_r, " c:", idx_c
+				if w[idx_r][idx_c] == ON:
+					cnt = cnt+1
+	return cnt
+
+
+def calcNewWorld(ow):
+	newWorld = []
+	for ir in range(len(ow)):
+		row = ow[ir]
+		newRow = ""
+		for ic in range(len(row)):
+
+			cnt = calcNeighbours(ow, ir, ic)
+			me = ow[ir][ic]
+			if me == OFF  and  cnt == 3:
+				newCell = ON
+			elif me == ON  and  (cnt == 2 or cnt == 3):
+				newCell = ON
 			else:
-				arr.append(c)
-		world.append(arr)
-	return world
-
-
-def countNeighbours(world, row, col):
-	sum = 0
-	countRows = len(world)
-	countCols = len(world[0])
-	for iRow in range(-1,2):
-		for iCol in range(-1,2):
-			if not (iRow == 0 and iCol == 0):
-				idxRow = (row + iRow) % countRows
-				idxCol = (col + iCol) % countCols
-				sum = sum + world[idxRow][idxCol] 
-	return sum 
-
-
-
-def calcNewWorld(world, logic):
-	newWorld = copy.deepcopy(world)
-	countRows = len(world)
-	countCols = len(world[0])
-	for iRow in range(countRows):
-		for iCol in range(countCols):
-#			print iRow, iCol
-			nNeighbours = countNeighbours(world, iRow, iCol)
-			me = world[iRow][iCol] % 2
-			newValue = logic[nNeighbours][me]
-			newWorld[iRow][iCol] = newValue
+				newCell = OFF
+#			newCell = str(cnt)
+			newRow = newRow + newCell
+		newWorld.append(newRow)
 	return newWorld
 
-def outputWorld(world):
-	for r in world:
-		s = ""
-		for c in r:
-			if c == 1:
-				s = s+'*'
-			else:
-				s = s+'.'
-#			s = s + str(c)
-		print s
+
+def main():
+	world = createWorld()
+	generation = 500
+	while generation > 0:
+		os.system('clear')
+		outputWorld(world)
+		time.sleep(0.5)
+		world = calcNewWorld(world)
+		generation = generation-1
 
 
-a = [ [1,0,0,4,5], [6,7,8,9,10] ]
-stringWorld = \
-"000000000," \
-"000001000," \
-"000011000," \
-"000001000," \
-"000000000," \
-"000000000"
+main()
 
-logic = { 0:[0,0],1:[0,0],2:[0,1],3:[1,1], 4:[0,0], 5:[0,0], 6:[0,0], 7:[0,0], 8:[0,0] }
+w = [ 
+	('..*.'), 
+	('.*.*'), 
+	('***.') 
+	]
+#calcNeighbours(w, 0, 3)
 
 
-#print field
 
-world = strToWorld(stringWorld)
+if "__main__" == __name__:
+	import doctest
+	doctest.testmod()
 
-for i in range(10):
-	outputWorld(world)
-	world = calcNewWorld(world, logic)
-	print "---"
-
-if __name__ == "__main__": 
-    doctest.testmod()
